@@ -10,19 +10,17 @@ const LoadingButton = (props) => {
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (isLoading) {
+        if (props.show) {
             simulateNetworkRequest().then(() => {
                 setLoading(false);
             });
         }
-    }, [isLoading]);
-
-    const handleClick = () => setLoading(true);
+    }, [props.show]);
 
     return (
         <>
             {
-                isLoading
+                props.show
                     ?
                     <Button variant="dark" disabled>
                         <Spinner
@@ -37,8 +35,8 @@ const LoadingButton = (props) => {
                     :
                     <Button
                         variant="dark"
-                        disabled={isLoading}
-                        onClick={!isLoading ? handleClick : null}> {props.text}
+                        disabled={props.show}
+                        onClick={!props.show ? props.func : null}> {props.text}
                     </Button >}
         </>
     );

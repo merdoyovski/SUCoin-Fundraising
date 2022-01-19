@@ -42,6 +42,8 @@ const Apply = () => {
 	const [toastText, setToasttext] = useState();
 	const [toastHeader, setToastheader] = useState();
 
+	const [isLoading, setLoading] = useState(false)
+
 	const [fileToSubmit, setFile] = useState();
 	const [fileName, setFilename] = useState();
 	const [hashToSubmit, setHash] = useState();
@@ -49,6 +51,7 @@ const Apply = () => {
 	const [txConfirmed, setTxconfirmed] = useState(false);
 
 	const connectToContract = async () => {
+		setLoading(true)
 		setToastshow(true)
 		setToastheader("Signing the Transaction")
 		setToasttext("Please sign the transaction from your wallet.")
@@ -76,6 +79,7 @@ const Apply = () => {
 			setToasttext("Your transaction is confirmed. Now, you can submit the project to our database.")
 
 			setTxconfirmed(true)
+			setLoading(false)
 
 			console.log("RESULT: ", receipt)
 			if (typeof receipt !== "undefined") {
@@ -92,6 +96,7 @@ const Apply = () => {
 	}
 
 	const handleDB = async (file) => {
+		setLoading(true)
 		try {
 			const apiInstance = axios.create({
 				baseURL: "https://localhost:5001",
@@ -106,6 +111,10 @@ const Apply = () => {
 						imageUrl: "emptyImg"
 					})
 					.then((res) => {
+						setToastshow(false)
+						setToastshow(true)
+						setToastheader("Succesfull")
+						setToasttext("Your project is submitted to our database.")
 						console.log("response: ", res.data)
 						resolve(res)
 					})
@@ -117,6 +126,7 @@ const Apply = () => {
 			})
 			let result = await response2
 			console.log(result)
+			setLoading(false)
 		} catch (error) {
 			console.log(error)
 
@@ -194,11 +204,11 @@ const Apply = () => {
 					<Row style={{ paddingLeft: "10%" }}>
 						{!txConfirmed ?
 							<Col style={{ justifyContent: "center", alignItems: "center" }}>
-								<Button variant="dark" onClick={() => { connectToContract() }}> Submit to Chain</Button>
+								<LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" func={connectToContract}> </LoadingButton>
 							</Col>
 							:
 							<Col style={{ justifyContent: "center", alignItems: "center" }}>
-								<Button variant="dark" onClick={() => { handleDB() }}> Submit to Database</Button>
+								<LoadingButton show={isLoading} text={"Submit to Database"} variant="dark" func={handleDB}> </LoadingButton>
 							</Col>
 						}
 						<Col style={{ justifyContent: "center", alignItems: "center" }}>
