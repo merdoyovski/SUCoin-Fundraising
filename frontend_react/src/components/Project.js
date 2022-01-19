@@ -43,7 +43,6 @@ details part 2
 
 `;
 
-
 const Project = () => {
   const { projectId } = useParams();
   const [state, setState] = useState({ status: "default" })
@@ -51,6 +50,8 @@ const Project = () => {
   const [isEditing, setEditing] = useState(false);
   const [isWhitelisted, setIswhitelisted] = useState(false);
   const [isOwner, setIsowner] = useState(false);
+  const [owner, setOwner] = useState();
+  const [signer, setSigner] = useState()
 
   const [project, setProject] = useState({
     rating: 0,
@@ -62,7 +63,6 @@ const Project = () => {
   });
 
   useEffect(async () => {
-    const CryptoJS = require('crypto-js');
     const apiInstance = axios.create({
       baseURL: "https://localhost:5001",
     })
@@ -72,16 +72,17 @@ const Project = () => {
         .get("/Project/Get/" + projectId)
         .then((res) => {
           setProject(res.data.data)
+          console.log("run bitch")
           setMarkdown(res.data.data.markDown)
           resolve(res)
         })
         .catch((e) => {
           const err = "Unable to add the project"
           reject(err)
-
         })
     })
   }, [])
+
 
   useEffect(async () => {
     const CryptoJS = require('crypto-js');
@@ -90,22 +91,25 @@ const Project = () => {
     const signer = await provider.getSigner()
     const registerContract = await new ethers.Contract(abi.address, ethersAbi.abi, signer)
 
-    if (await registerContract.whitelist(await signer.getAddress())) {
-      setIswhitelisted(true)
-    } else { setIswhitelisted(false) }
-
     const hash = "0x" + await CryptoJS.SHA256(project.fileHex).toString()
     const projInfo = await registerContract.projectsRegistered(hash)
 
-    if (projInfo.proposer == await signer.getAddress()) {
-      setIsowner(true)
-      console.log("owner")
-    } else {
-      console.log("NOT owner")
-      setIsowner(false)
-    }
+    if (await registerContract.whitelist(await signer.getAddress())) {
+      setIswhitelisted(true)
+    } else { setIswhitelisted(false) }
+    setOwner(await projInfo.proposer)
+    setSigner(await signer.getAddress())
 
   }, [project])
+
+
+  useEffect(async () => {
+    if (owner == signer) {
+      setIsowner(true)
+    } else {
+      setIsowner(false)
+    }
+  }, [owner, signer])
 
   const config = {
     headers: {
@@ -114,10 +118,7 @@ const Project = () => {
   };
   const handleEdit = async () => {
     setEditing(true);
-    //const response = await axios.put('https://localhost:5001/Project/UpdateMarkDown/1/heddy', config);
-
   }
-
 
   const handleEditSubmission = async () => {
     setEditing(false);
@@ -150,8 +151,7 @@ const Project = () => {
   const navigate = useNavigate();
 
   return (
-    <>
-
+    <div>
       <BreadCrumb projectTitle={project.projectName} />
       <ProjectInfo project={project} status={state.status} />
       {
@@ -205,7 +205,7 @@ const Project = () => {
         :
         <></>
       }
-    </>
+    </div>
   );
 };
 
