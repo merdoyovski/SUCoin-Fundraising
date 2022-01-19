@@ -1,12 +1,13 @@
 pragma solidity ^0.8.9;
 // SPDX-License-Identifier: MIT
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
+import "contracts/Maestro.sol";
 contract DutchAuction{
     uint public startingPrice;
     uint public priceDeductionRate;
     ERC20 public projectToken;
     ERC20 public sucoin;
+    Maestro public maestroSC;
     address public owner;
     uint public start = 0;
     uint public end = 0;
@@ -62,15 +63,18 @@ contract DutchAuction{
         uint _numberOfTokensToBeDistributed,
         address _sucoinaddress,
         uint _minPrice,
-        address _owner
+        address _maestro,
+        bytes32 projectHash
     ) {
-        owner = _owner;
+        owner = msg.sender;
         priceDeductionRate = _priceDeductionRate;
         startingPrice = _startingPrice;
         numberOfTokensToBeDistributed = _numberOfTokensToBeDistributed;
         minPrice = _minPrice;
         sucoin = ERC20(_sucoinaddress);
         projectToken = ERC20(_token);
+        maestroSC = Maestro(_maestro);
+        maestroSC.AssignAuction(msg.sender, projectHash, _token, "CappedFCFS");
     }
 
     function startAuction(uint periodInDays) public isAdmin(true){

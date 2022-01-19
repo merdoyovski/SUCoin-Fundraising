@@ -32,7 +32,7 @@ const BiLiraAddress = "0xc8a80f82876C20903aa8eE1e55fa9782Aa9Ed3c3";
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
+}
 const TokenSwap = () => {
     const [amount, setAmount] = useState();
     const [var2, setVar2] = useState();
@@ -41,12 +41,12 @@ const TokenSwap = () => {
     const [var5, setVar5] = useState();
 
     const [toastShow, setToastshow] = useState(false);
-	const [toastText, setToasttext] = useState();
-	const [toastHeader, setToastheader] = useState();
+    const [toastText, setToasttext] = useState();
+    const [toastHeader, setToastheader] = useState();
 
 
     const action1 = async () => {
-        try{
+        try {
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             const signer = await provider.getSigner();
 
@@ -54,79 +54,79 @@ const TokenSwap = () => {
             var SUCoinContract = await new ethers.Contract(wrapperTokenAddress, wrapperTokenABI.abi, signer);
 
             setToastshow(true)
-		    setToastheader("Signing the Transaction")
-		    setToasttext("Please sign the transaction from your wallet.")            
+            setToastheader("Signing the Transaction")
+            setToasttext("Please sign the transaction from your wallet.")
             var approveTx = await BiLiraContract.approve(wrapperTokenAddress, amount);
 
             setToastshow(false)
-			setToastshow(true)
-			setToastheader("Pending Transaction")
-			setToasttext("Waiting for transaction confirmation.")
+            setToastshow(true)
+            setToastheader("Pending Transaction")
+            setToasttext("Waiting for transaction confirmation.")
             let receipt = await approveTx.wait(1);
 
             setToastshow(false)
             setToastshow(true)
-		    setToastheader("Signing the Transaction");
-		    setToasttext("Please sign the transaction from your wallet.");
+            setToastheader("Signing the Transaction");
+            setToasttext("Please sign the transaction from your wallet.");
 
             var buyTx = await SUCoinContract.depositFor(await signer.getAddress(), amount);
 
             setToastshow(false);
-			setToastshow(true);
-			setToastheader("Pending Transaction");
-			setToasttext("Waiting for transaction confirmation.");
+            setToastshow(true);
+            setToastheader("Pending Transaction");
+            setToasttext("Waiting for transaction confirmation.");
 
             receipt = await buyTx.wait(1);
 
             setToastshow(false)
-			setToastshow(true)
-			setToastheader("Success")
-			setToasttext("Succesfuly bought %s SUCoin.", amount);
+            setToastshow(true)
+            setToastheader("Success")
+            setToasttext("Succesfuly bought %s SUCoin.", amount);
 
             sleep(1000);
             setToastshow(false);
-        }catch (error) {
-			setToastshow(true)
-			setToastheader("Catched an error")
-			setToasttext(error)
-			return false;
-		}
+        } catch (error) {
+            setToastshow(true)
+            setToastheader("Catched an error")
+            setToasttext(error)
+            return false;
+        }
 
     }
 
     const action2 = async () => {
-        try{
+        try {
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             const signer = await provider.getSigner();
 
             var SUCoinContract = await new ethers.Contract(wrapperTokenAddress, wrapperTokenABI.abi, signer);
 
             setToastshow(true)
-		    setToastheader("Signing the Transaction")
-		    setToasttext("Please sign the transaction from your wallet.")    
+            setToastheader("Signing the Transaction")
+            setToasttext("Please sign the transaction from your wallet.")
 
             var sellTx = await SUCoinContract.withdrawTo(await signer.getAddress(), amount);
 
             setToastshow(false)
-			setToastshow(true)
-			setToastheader("Pending Transaction")
-			setToasttext("Waiting for transaction confirmation.")
+            setToastshow(true)
+            setToastheader("Pending Transaction")
+            setToasttext("Waiting for transaction confirmation.")
 
             let receipt = await sellTx.wait(1);
 
             setToastshow(false)
-			setToastshow(true)
-			setToastheader("Success")
-			setToasttext("Succesfuly swapped %s SUCoin to %s BiLira.", amount, amount);
+            setToastshow(true)
+            setToastheader("Success")
+            setToasttext("Succesfuly swapped %s SUCoin to %s BiLira.", amount, amount);
 
             sleep(1000);
             setToastshow(false);
-        }catch (error) {
-			setToastshow(true)
-			setToastheader("Catched an error")
-			setToasttext(error)
-			return false;
-		}
+        } catch (error) {
+            setToastshow(true)
+            setToastheader("Catched an error")
+            setToasttext(error)
+            return false;
+        }
     }
 
     const handleInput = e => {
@@ -139,6 +139,7 @@ const TokenSwap = () => {
 
     return (
         <>
+            <ToastBar toastText={toastText} toastHeader={toastHeader} toastShow={toastShow} setToastshow={setToastshow}></ToastBar>
             <Wrapper>
                 <Container  >
                     <Row className="g-2">

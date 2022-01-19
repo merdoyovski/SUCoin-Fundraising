@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 // Components
 import Thumb from '../Thumb';
@@ -15,11 +15,11 @@ import ProjectRegister from '../../abi/project.json'
 import Button from '@mui/material/Button';
 
 import ButtonGroup from '@mui/material/ButtonGroup';
+import axios from 'axios'
+import Cookies from 'js-cookie'
 
 
-const ProjectInfo = ({ project, status }) => {
-
-
+const ProjectInfo = ({ project, status, isWhitelisted, isOwner, projectId }) => {
 
   const addWhitelist = async () => {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -33,10 +33,45 @@ const ProjectInfo = ({ project, status }) => {
     var carContract = await new web3.eth.Contract(carAbi, carContractAddress);
   }
 
+  const getFile = async () => {
+    const apiInstance = axios.create({
+      baseURL: "https://localhost:5001",
+    })
+    apiInstance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get('token')}`
+    let response2 = new Promise((resolve, reject) => {
+      apiInstance
+        .get("/Project/Get/" + projectId)
+        .then((res) => {
+          downloadFile(res.data.data.fileHex)
+          resolve(res)
+        })
+        .catch((e) => {
+          const err = "Unable to add the project"
+          reject(err)
+          console.log(e)
+        })
+    })
+  }
+
+  const downloadFile = async (file) => {
+    const reader = new FileReader()
+    const x = Buffer.from(file, 'hex')
+    const blob = new Blob([x.buffer]);
+
+    reader.readAsText(blob);
+    reader.onloadend = async () => {
+      const data = window.URL.createObjectURL(blob);
+      const tempLink = await document.createElement('a');
+      tempLink.href = data;
+      tempLink.download = "Project_#" + projectId + ".pdf"; // some props receive from the component.
+      tempLink.click();
+    }
+  }
+
   return (
     <Wrapper backdrop={"#ccc"}>
       <Content>
-        <Thumb
+        <Thumb style={{ alignItems: "center" }}
           image={
             //project.imageUrl == "" ? NoImage : project.imageUrl
             NoImage
@@ -67,21 +102,17 @@ const ProjectInfo = ({ project, status }) => {
               </form>
               : <div></div>
             }
-            {status == "owner" ?
+            {isOwner ?
               <div className='director'>
                 <Button variant="contained">Edit Project</Button>
               </div>
               : <div></div>
             }
-            {status == "whitelisted" ?
+            {isWhitelisted ?
 
               <div className='director'>
-                <a style={{ color: "#fff" }}
-                  href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                  download
-                >
-                  Click to Download Project PDF
-                </a>
+                <Button variant="dark" onClick={() => getFile()}>Download File</Button>
+
                 <h3>    Vote </h3>
                 <ButtonGroup variant="contained" aria-label="outlined primary button group">
                   <Button>Approve</Button>

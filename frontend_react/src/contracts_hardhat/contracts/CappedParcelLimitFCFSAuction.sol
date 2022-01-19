@@ -1,11 +1,13 @@
 pragma solidity ^0.8.9;
 // SPDX-License-Identifier: MIT
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "contracts/Maestro.sol";
 
 contract CappedParcelLimitFCFSAuction{
     uint public price;
     ERC20 public projectToken;
     ERC20 public sucoin;
+    Maestro public maestroSC;
     address public owner;
     mapping (address => uint) public biddingBook;
     uint public limit;
@@ -54,19 +56,22 @@ contract CappedParcelLimitFCFSAuction{
     }
 
     constructor(
-        address _owner,
         uint _price,
         address _token,
         address _sucoin,
         uint _numberOfTokensToBeDistributed,
-        uint _limit
+        uint _limit,
+        address _maestro,
+        bytes32 projectHash
     ){
-        owner = _owner;
+        owner = msg.sender;
         price = _price;
         projectToken = ERC20(_token);
         sucoin = ERC20(_sucoin);
         numberOfTokensToBeDistributed = _numberOfTokensToBeDistributed;
         limit = _limit;
+        maestroSC = Maestro(_maestro);
+        maestroSC.AssignAuction(msg.sender, projectHash, _token, "CappedFCFS");
     }
 
     function startAuction(uint periodInDays) public isAdmin(true){

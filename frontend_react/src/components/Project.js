@@ -72,7 +72,7 @@ const Project = () => {
         .get("/Project/Get/" + projectId)
         .then((res) => {
           setProject(res.data.data)
-          console.log("run bitch")
+          console.log("run bitch", res.data.data)
           setMarkdown(res.data.data.markDown)
           resolve(res)
         })
@@ -96,7 +96,11 @@ const Project = () => {
 
     if (await registerContract.whitelist(await signer.getAddress())) {
       setIswhitelisted(true)
-    } else { setIswhitelisted(false) }
+      console.log("whitelisted bitch")
+    } else {
+      setIswhitelisted(false)
+      console.log("NOT whitelisted bitch")
+    }
     setOwner(await projInfo.proposer)
     setSigner(await signer.getAddress())
 
@@ -153,7 +157,7 @@ const Project = () => {
   return (
     <div>
       <BreadCrumb projectTitle={project.projectName} />
-      <ProjectInfo project={project} status={state.status} />
+      <ProjectInfo projectId={projectId} project={project} status={state.status} isOwner={isOwner} isWhitelisted={isWhitelisted} />
       {
         isOwner ?
 
@@ -184,26 +188,22 @@ const Project = () => {
           <Button style={{ margin: "10px" }} onClick={() => { handleEdit() }}> Edit Project Page</Button>
           {isEditing ?
             <div style={{ width: "100%", textAlign: "center", margin: "auto" }}>
-
               <MDEditor width={window.innerWidth} height={500} value={markdown} onChange={setMarkdown} />
               <div style={{ padding: "50px 0 0 0" }} />
               <Button onClick={() => { handleEditSubmission() }}> Save Changes</Button>
             </div>
             :
-
             <MDEditor.Markdown
               source={markdown}
               linkTarget="_blank"
-            // previewOptions={{
-            //   linkTarget: "_blank"
-            // }}
             />
-
-
           }
         </div>
         :
-        <></>
+        <MDEditor.Markdown style={{ margin: "5%" }}
+          source={markdown}
+          linkTarget="_blank"
+        />
       }
     </div>
   );
