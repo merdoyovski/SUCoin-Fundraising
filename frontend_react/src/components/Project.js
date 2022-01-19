@@ -26,7 +26,7 @@ import Container from 'react-bootstrap/Col'
 import Cookies from 'js-cookie'
 
 import { ethers } from 'ethers';
-import ethersAbi from '../../contracts_hardhat/artifacts/contracts/ProjectRegister.sol/ProjectRegister.json'
+import ethersAbi from '../contracts_hardhat/artifacts/contracts/ProjectRegister.sol/ProjectRegister.json'
 import abi from '../abi/project.json'
 
 const mkdStr = `# {Freelance Finder Version 2}
