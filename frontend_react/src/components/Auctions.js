@@ -24,7 +24,7 @@ import Cookies from 'js-cookie'
 import axios from "axios"
 import abi from '../abi/project.json'
 import { ethers } from 'ethers';
-import ethersAbi from '../hardhat/artifacts/contracts/ProjectRegister.sol/ProjectRegister.json'
+import ethersAbi from '../../contracts_hardhat/artifacts/contracts/ProjectRegister.sol/ProjectRegister.json'
 
 const options = [
     { value: 'fens', label: 'FENS' },
