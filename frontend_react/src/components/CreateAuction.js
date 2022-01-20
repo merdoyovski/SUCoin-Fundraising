@@ -48,7 +48,7 @@ const CreateAuction = () => {
         {
             id: 0,
             name: "Dutch Auction",
-            description: "this is DUTCH Auction"
+            description: "this is DUTCH Auction" 
         },
         {
             id: 1,
@@ -70,24 +70,27 @@ const CreateAuction = () => {
     ]);
 
     const [auction, setAuction] = useState("")
-    const [var2, setVar2] = useState();
-    const [var1, setVar1] = useState();
+    const [tokenPrice, setTokenPrice] = useState();
+    const [tokenAddress, setTokenAddress] = useState();
+    const  [TokensToBeDesitributed,setTokensToBeDesitributed] = useState();
 
 
 
     const action1 = () => {
-        console.log(var1)
+        console.log("Action1");
     }
 
     const action2 = () => {
-        console.log(var2)
+        console.log("Action2");
     }
 
     const handleInput = e => {
         const name = e.currentTarget.name;
         const value = e.currentTarget.value;
 
-        if (name === 'var1') setVar1(value);
+        if (name === 'tokenPrice') setTokenPrice(value);
+        if (name === 'tokenAddress') setTokenAddress(value);
+        if (name === 'TokensToBeDesitributed') setTokensToBeDesitributed(value);
 
 
     };
@@ -96,27 +99,27 @@ const CreateAuction = () => {
 
         const provider = await new ethers.providers.Web3Provider(window.ethereum);
         const signer = await provider.getSigner();
-        /*
+        
                 if (id == 0) {
-                    const DutchAuction = new ethers.getContractFactory(DutchAuction.abi, DutchAuction.bytecode, signer);
-                    let auction = await DutchAuction.deploy(10, 1, ProjectToken.address, 1000, SUCoin.address, 2, maestro.address, fileHash);
+                    const DutchAuction_ = new ethers.getContractFactory(DutchAuction.abi, DutchAuction.bytecode, signer);
+                    let auction = await DutchAuction_.deploy(10, 1, tokenAddress, TokensToBeDesitributed, SUCoin.address, 2, maestro.address, fileHash);
                     await auction.deployed();
                 }
                 else if (id == 1) {
-                    const CappedFixedPriceAuction = new ethers.ContractFactory(CappedFCFSAuction.abi, CappedFCFSAuction.bytecode, signer);
-                    let auction = await CappedFixedPriceAuction.deploy(1, ProjectToken.address, SUCoin.address, 10000, maestro.address, fileHash);
+                    const CappedFCFSAuction = new ethers.ContractFactory(CappedFCFS.abi, CappedFCFS.bytecode, signer);
+                    let auction = await CappedFCFSAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, maestro.address, fileHash);
                     await auction.deployed();
                 }
                 else if (id == 2) {
                     const CappedFixedPriceProportionalAuction = new ethers.ContractFactory(CappedAuctionWRedistribution.abi, CappedAuctionWRedistribution.bytecode, signer);
-                    let auction = await CappedFixedPriceProportionalAuction.deploy(1, ProjectToken.address, SUCoin.address, 10000, maestro.address, fileHash);
+                    let auction = await CappedFixedPriceProportionalAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, maestro.address, fileHash);
                     await auction.deployed();
                 }
                 else if (id == 3) {
-                    const CappedParcelLimitFCFSAuction = new ethers.ContractFactory(CappedParcelLimitFCFSAuction.abi, CappedParcelLimitFCFSAuction.bytecode, signer);
-                    let auction = await CappedParcelLimitFCFSAuction.deploy(1, ProjectToken.address, SUCoin.address, 3000, 1000, maestro.address, fileHash);
+                    const CappedParcelLimitFCFSAuction = new ethers.ContractFactory(CappedParcelLimitFCFS.abi, CappedParcelLimitFCFS.bytecode, signer);
+                    let auction = await CappedParcelLimitFCFSAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, 1000, maestro.address, fileHash);
                     await auction.deployed();
-                }*/
+                }
     }
 
     return (
@@ -135,9 +138,41 @@ const CreateAuction = () => {
                                         <Accordion.Header> {type.name}        </Accordion.Header>
                                         <Accordion.Body>
                                             {type.description}
+                                            <Container  >
+            <Row className="g-2">
+                <Col md>
+                    <FloatingLabel controlId="floatingInputGrid" label="price">
+                        <Form.Control onChange={handleInput} name="tokenPrice" type="text" />
+                    </FloatingLabel>
+                </Col>
+            </Row >
 
+            <Row className="g-2">
+                <Col md>
+                    <FloatingLabel controlId="floatingInputGrid" label="tokenAddress">
+                        <Form.Control onChange={handleInput} name="tokenAddress" type="text" />
+                    </FloatingLabel>
+                </Col>
+            </Row >
 
-                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" onClick={(x) => console.log(x)}> </LoadingButton>
+            <Row className="g-2">
+                <Col md>
+                    <FloatingLabel controlId="floatingInputGrid" label="#TokensToBeDesitributed">
+                        <Form.Control onChange={handleInput} name="TokensToBeDesitributed" type="text" />
+                    </FloatingLabel>
+                </Col>
+            </Row >
+
+            <br></br>
+            <Row style={{ paddingLeft: "10%" }}>
+            <Col style={{ justifyContent: "center", alignItems: "center" }}>
+            <Button variant="dark" onClick={() => { action1() }}> Create</Button>
+            </Col>
+            </Row>
+            </Container>
+                                         
+
+                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" onClick={() => {deployAuction()}}>Deploy Auction </LoadingButton>
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>
