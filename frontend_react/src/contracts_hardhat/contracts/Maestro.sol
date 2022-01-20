@@ -30,7 +30,8 @@ contract Maestro {
     event CreateAuctionEvent(
         address indexed creator,
         address auction,
-        string auctionType
+        string auctionType,
+        bytes32 fileHash
     );
 
     modifier tokenAssigned(bytes32 projectHash){
@@ -61,7 +62,7 @@ contract Maestro {
     function AssignAuction(address owner, bytes32 projectHash, address tokenAddress, string memory aucType) public tokenAssigned(projectHash) tokenOwner(projectHash, owner) notDeployed(projectHash) returns(bool){
         require(projectTokens[projectHash].token == tokenAddress);
         projectTokens[projectHash].auction = msg.sender;
-        emit CreateAuctionEvent(owner, msg.sender, aucType);
+        emit CreateAuctionEvent(owner, msg.sender, aucType, projectHash);
         return true;
     }
 }
