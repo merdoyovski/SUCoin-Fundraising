@@ -56,13 +56,16 @@ const TokenSwap = () => {
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             const signer = await provider.getSigner();
 
+            const value = ethers.utils.parseUnits(amount, 18);
+
             var BiLiraContract = await new ethers.Contract(BiLiraAddress, TokenABI.abi, signer);
             var SUCoinContract = await new ethers.Contract(wrapperTokenAddress, wrapperTokenABI.abi, signer);
 
+            //console.log("done", ethers.parseUnits(value, "gwei"))
             setToastshow(true)
             setToastheader("Signing the Transaction")
             setToasttext("Please sign the transaction from your wallet.")
-            var approveTx = await BiLiraContract.approve(wrapperTokenAddress, amount);
+            var approveTx = await BiLiraContract.approve(wrapperTokenAddress, value);
 
             setToastshow(false)
             setToastshow(true)
@@ -75,7 +78,7 @@ const TokenSwap = () => {
             setToastheader("Signing the Transaction");
             setToasttext("Please sign the transaction from your wallet.");
 
-            var buyTx = await SUCoinContract.depositFor(await signer.getAddress(), amount);
+            var buyTx = await SUCoinContract.depositFor(await signer.getAddress(), value);
 
             setToastshow(false);
             setToastshow(true);
@@ -92,7 +95,7 @@ const TokenSwap = () => {
             //sleep(1000);
             //setToastshow(false);
         } catch (error) {
-
+            console.log(error)
             return false;
         }
     }
@@ -104,11 +107,13 @@ const TokenSwap = () => {
 
             var SUCoinContract = await new ethers.Contract(wrapperTokenAddress, wrapperTokenABI.abi, signer);
 
+            const value = ethers.utils.parseUnits(amount, 18);
+
             setToastshow(true)
             setToastheader("Signing the Transaction")
             setToasttext("Please sign the transaction from your wallet.")
 
-            var sellTx = await SUCoinContract.withdrawTo(await signer.getAddress(), amount);
+            var sellTx = await SUCoinContract.withdrawTo(await signer.getAddress(), value);
 
             setToastshow(false)
             setToastshow(true)
@@ -120,7 +125,7 @@ const TokenSwap = () => {
             setToastshow(false)
             setToastshow(true)
             setToastheader("Success")
-            setToasttext("Succesfuly swapped %s SUCoin to %s BiLira." + amount);
+            setToasttext("Succesfuly swapped %s SUCoin to %s BiLira." + value);
 
             //sleep(1000);
             //setToastshow(false);

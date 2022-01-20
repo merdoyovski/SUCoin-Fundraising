@@ -41,7 +41,28 @@ const options = [
 const MaestroAddress = "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70";
 const CappedFCFSAddress = "0x43f691a5D43Dd8edbDa222c6a0de967E52a23db2"
 const Auctions = () => {
-    const [auctions, setAuctions] = useState();
+    const [auctions, setAuctions] = useState([
+        {
+            "auctionAddress": "0x98f2C2aFB088bE9378a4dEb2672Af309E9b65329",
+            "fileHash": "0xa190d2b3a3323f420e5df6078d27bf6d7d76144aea19e32cb66ff61b4ad07d2d",
+            "auctionType": "CappedFCFS",
+            "creator": "0xDE02A36403d7a38eB9D6a8568599Ef6CDf18315b",
+            "tokenSymbol": "Lira",
+            "tokenName": "BiLira",
+            "status": "notStarted",
+            "tokenAddress": "0xc8a80f82876C20903aa8eE1e55fa9782Aa9Ed3c3"
+        },
+        {
+            "auctionAddress": "0x38a758A743Df330182Aa3988090d40b791823255",
+            "fileHash": "0x4fd063a659cd3fe36b2ae58f30c5b7e36e5b0e10fcc2e447ebd76a5443ea2689",
+            "auctionType": "CappedFCFS",
+            "creator": "0xDE02A36403d7a38eB9D6a8568599Ef6CDf18315b",
+            "tokenSymbol": "Lira",
+            "tokenName": "BiLira",
+            "status": "notStarted",
+            "tokenAddress": "0xc8a80f82876C20903aa8eE1e55fa9782Aa9Ed3c3"
+        }
+    ]);
     const [var2, setVar2] = useState();
     const [var3, setVar3] = useState();
     const [var4, setVar4] = useState();
@@ -50,6 +71,7 @@ const Auctions = () => {
     const [toastShow, setToastshow] = useState(false);
     const [toastText, setToasttext] = useState();
     const [toastHeader, setToastheader] = useState();
+    const [projects, setProjects] = useState();
 
     useEffect(async () => {
         try {
@@ -95,6 +117,36 @@ const Auctions = () => {
             setToasttext(error)
             return false;
         }
+    }, [])
+
+    useEffect(async () => {
+        try {
+            const apiInstance = axios.create({
+                baseURL: "https://localhost:5001",
+            })
+            apiInstance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get('token')}`
+            let response2 = new Promise((resolve, reject) => {
+                apiInstance
+                    .get("/Project/Get")
+                    .then((res) => {
+                        console.log("response: ", res.data)
+                        resolve(res)
+                    })
+                    .catch((e) => {
+                        const err = "Unable to add the project"
+                        reject(err)
+
+                    })
+            })
+            let result = await response2
+            console.log("ehee", result.data.data)
+            setProjects(result.data.data)
+
+        } catch (error) {
+            console.log(error)
+        }
+
+
     }, [])
 
     const action2 = () => {

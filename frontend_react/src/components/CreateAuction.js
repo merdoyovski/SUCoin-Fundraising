@@ -9,9 +9,12 @@ import MDEditor from "@uiw/react-md-editor";
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
+import Accordion from 'react-bootstrap/Accordion'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Col'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import Card from 'react-bootstrap/Card'
+
 // Styles
 import { Wrapper, WrapperFile } from './Projects.styles';
 import Web3 from 'web3';
@@ -28,11 +31,22 @@ import ethersAbi from '../contracts_hardhat/artifacts/contracts/ProjectRegister.
 
 
 const CreateAuction = () => {
-    const [var1, setVar1] = useState();
+    const [isLoading, setLoading] = useState(false)
+    const [auctionTypes, setAuctiontypes] = useState([
+        {
+            name: "Dutch",
+            description: "DUTCH MUTCH"
+        },
+        {
+            name: "FCFS",
+            description: "First come first served"
+        }
+    ]);
+
+    const [auction, setAuction] = useState("")
     const [var2, setVar2] = useState();
-    const [var3, setVar3] = useState();
-    const [var4, setVar4] = useState();
-    const [var5, setVar5] = useState();
+    const [var1, setVar1] = useState();
+
 
 
     const action1 = () => {
@@ -48,17 +62,53 @@ const CreateAuction = () => {
         const value = e.currentTarget.value;
 
         if (name === 'var1') setVar1(value);
-        if (name === 'var2') setVar2(value);
-        if (name === 'var3') setVar3(value);
-        if (name === 'var4') setVar4(value);
-        if (name === 'var5') setVar5(value);
+
 
     };
+
+    const deployAuction = async () => {
+
+    }
 
     return (
         <>
             <Wrapper>
+
+
                 <Container  >
+
+                    {
+
+                        auctionTypes.map((type, index) => (
+                            <Col>
+                                <Accordion defaultActiveKey="0" >
+                                    <Accordion.Item eventKey={index}>
+                                        <Accordion.Header> {type.name}        </Accordion.Header>
+                                        <Accordion.Body>
+                                            {type.description}
+
+
+                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" func={deployAuction}> </LoadingButton>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            </Col>
+                        ))
+
+
+                    }
+
+                </Container>
+            </Wrapper >
+
+        </>
+    );
+};
+
+
+/*
+
+  <Container  >
                     <Row className="g-2">
                         <Col md>
                             <FloatingLabel controlId="floatingInputGrid" label="Var1">
@@ -86,12 +136,6 @@ const CreateAuction = () => {
                         </Col>
                     </Row>
                 </Container>
-            </Wrapper >
 
-        </>
-    );
-};
-
-
-
+                */
 export default CreateAuction;
