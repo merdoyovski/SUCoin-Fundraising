@@ -115,7 +115,7 @@ const TokenSwap = () => {
             setToastheader("Pending Transaction")
             setToasttext("Waiting for transaction confirmation.")
 
-            let receipt = await sellTx.wait(1);
+            await sellTx.wait(1);
 
             setToastshow(false)
             setToastshow(true)
