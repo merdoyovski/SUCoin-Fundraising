@@ -47,6 +47,7 @@ const Project = () => {
   const { projectId } = useParams();
   const [state, setState] = useState({ status: "default" })
   const [markdown, setMarkdown] = useState(mkdStr);
+  const [isEditingChild, setEditingchild] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [isWhitelisted, setIswhitelisted] = useState(false);
   const [isOwner, setIsowner] = useState(false);
@@ -72,7 +73,6 @@ const Project = () => {
         .get("/Project/Get/" + projectId)
         .then((res) => {
           setProject(res.data.data)
-          console.log("run bitch", res.data.data)
           setMarkdown(res.data.data.markDown)
           resolve(res)
         })
@@ -157,7 +157,7 @@ const Project = () => {
   return (
     <div>
       <BreadCrumb projectTitle={project.projectName} />
-      <ProjectInfo projectId={projectId} project={project} status={state.status} isOwner={isOwner} isWhitelisted={isWhitelisted} />
+      <ProjectInfo setProject={setProject} projectId={projectId} project={project} status={state.status} isOwner={isOwner} isWhitelisted={isWhitelisted} />
       {
         isOwner ?
 
@@ -168,7 +168,7 @@ const Project = () => {
               </Col>
 
               <Col style={{ justifyContent: "center", alignItems: "center" }}>
-                <Button variant="dark" onClick={() => navigate("/createAuction")}> Start the Auction</Button>
+                <Button variant="dark" onClick={() => navigate("/createAuction")}> Create Auction</Button>
               </Col>
 
             </Row>
