@@ -39,7 +39,7 @@ import TokenABI from '../contracts_hardhat/artifacts/contracts/Token.sol/Token.j
 
 const BiLiraAddress = "0xc8a80f82876C20903aa8eE1e55fa9782Aa9Ed3c3";
 
-const maestro = { address: "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70" }
+const maestro = { address: "0x4ED02B5dA043d8c9882f11B9784D67f2a7E9cC7C" }
 const SUCoin = { address: "0xa011037b3EF5EFd8e98D619e4E2fB8CB0a6acE9E" }
 
 const CreateAuction = () => {
@@ -48,7 +48,7 @@ const CreateAuction = () => {
         {
             id: 0,
             name: "Dutch Auction",
-            description: "this is DUTCH Auction" 
+            description: "this is DUTCH Auction"
         },
         {
             id: 1,
@@ -72,62 +72,72 @@ const CreateAuction = () => {
     const [auction, setAuction] = useState("")
     const [tokenPrice, setTokenPrice] = useState();
     const [tokenAddress, setTokenAddress] = useState();
-    const  [TokensToBeDesitributed,setTokensToBeDesitributed] = useState();
+    const [TokensToBeDesitributed, setTokensToBeDesitributed] = useState();
 
 
 
     const action1 = () => {
-        console.log("Action1");
+
+
     }
 
-    const action2 = () => {
-        console.log("Action2");
+
+
+    const deployAuction = async (id) => {
+
+        const provider = await new ethers.providers.Web3Provider(window.ethereum);
+        const signer = await provider.getSigner();
+
+        if (id == 0) {
+            const DutchAuction_ = new ethers.ContractFactory(DutchAuction.abi, DutchAuction.bytecode, signer);
+            let auction = await DutchAuction_.deploy(10, 1, tokenAddress, TokensToBeDesitributed, SUCoin.address, 2, maestro.address, auction.fileHash);
+            await auction.deployed();
+        }
+        else if (id == 1) {
+            const CappedFCFSAuction = new ethers.ContractFactory(CappedFCFS.abi, CappedFCFS.bytecode, signer);
+            let auction = await CappedFCFSAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, maestro.address, auction.fileHash);
+            await auction.deployed();
+        }
+        else if (id == 2) {
+            const CappedFixedPriceProportionalAuction = new ethers.ContractFactory(CappedAuctionWRedistribution.abi, CappedAuctionWRedistribution.bytecode, signer);
+            let auction = await CappedFixedPriceProportionalAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, maestro.address, auction.fileHash);
+            await auction.deployed();
+        }
+        else if (id == 3) {
+            const CappedParcelLimitFCFSAuction = new ethers.ContractFactory(CappedParcelLimitFCFS.abi, CappedParcelLimitFCFS.bytecode, signer);
+            let auction = await CappedParcelLimitFCFSAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, 1000, maestro.address, auction.fileHash);
+            await auction.deployed();
+        }
     }
+
 
     const handleInput = e => {
         const name = e.currentTarget.name;
         const value = e.currentTarget.value;
 
         if (name === 'tokenPrice') setTokenPrice(value);
+
         if (name === 'tokenAddress') setTokenAddress(value);
         if (name === 'TokensToBeDesitributed') setTokensToBeDesitributed(value);
-
-
     };
-
-    const deployAuction = async (id) => {
-
-        const provider = await new ethers.providers.Web3Provider(window.ethereum);
-        const signer = await provider.getSigner();
-        
-                if (id == 0) {
-                    const DutchAuction_ = new ethers.getContractFactory(DutchAuction.abi, DutchAuction.bytecode, signer);
-                    let auction = await DutchAuction_.deploy(10, 1, tokenAddress, TokensToBeDesitributed, SUCoin.address, 2, maestro.address, fileHash);
-                    await auction.deployed();
-                }
-                else if (id == 1) {
-                    const CappedFCFSAuction = new ethers.ContractFactory(CappedFCFS.abi, CappedFCFS.bytecode, signer);
-                    let auction = await CappedFCFSAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, maestro.address, fileHash);
-                    await auction.deployed();
-                }
-                else if (id == 2) {
-                    const CappedFixedPriceProportionalAuction = new ethers.ContractFactory(CappedAuctionWRedistribution.abi, CappedAuctionWRedistribution.bytecode, signer);
-                    let auction = await CappedFixedPriceProportionalAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, maestro.address, fileHash);
-                    await auction.deployed();
-                }
-                else if (id == 3) {
-                    const CappedParcelLimitFCFSAuction = new ethers.ContractFactory(CappedParcelLimitFCFS.abi, CappedParcelLimitFCFS.bytecode, signer);
-                    let auction = await CappedParcelLimitFCFSAuction.deploy(tokenPrice, tokenAddress, SUCoin.address, TokensToBeDesitributed, 1000, maestro.address, fileHash);
-                    await auction.deployed();
-                }
-    }
 
     return (
         <>
+
             <Wrapper>
 
 
                 <Container  >
+                    <Row className="g-2">
+                        <Col md>
+                            <FloatingLabel controlId="floatingInputGrid" label="Token Address">
+                                <Form.Control onChange={handleInput} name="tokenAddress" value={tokenAddress} type="text" />
+                            </FloatingLabel>
+                        </Col>
+                        <Col style={{ justifyContent: "center", alignItems: "center" }}>
+                            <Button variant="dark" onClick={() => { action1() }}> Assign Token</Button>
+                        </Col>
+                    </Row >
 
                     {
 
@@ -139,40 +149,40 @@ const CreateAuction = () => {
                                         <Accordion.Body>
                                             {type.description}
                                             <Container  >
-            <Row className="g-2">
-                <Col md>
-                    <FloatingLabel controlId="floatingInputGrid" label="price">
-                        <Form.Control onChange={handleInput} name="tokenPrice" type="text" />
-                    </FloatingLabel>
-                </Col>
-            </Row >
+                                                <Row className="g-2">
+                                                    <Col md>
+                                                        <FloatingLabel controlId="floatingInputGrid" label="price">
+                                                            <Form.Control onChange={handleInput} name="tokenPrice" type="text" />
+                                                        </FloatingLabel>
+                                                    </Col>
+                                                </Row >
 
-            <Row className="g-2">
-                <Col md>
-                    <FloatingLabel controlId="floatingInputGrid" label="tokenAddress">
-                        <Form.Control onChange={handleInput} name="tokenAddress" type="text" />
-                    </FloatingLabel>
-                </Col>
-            </Row >
+                                                <Row className="g-2">
+                                                    <Col md>
+                                                        <FloatingLabel controlId="floatingInputGrid" label="tokenAddress">
+                                                            <Form.Control onChange={handleInput} name="tokenAddress" value={tokenAddress} type="text" />
+                                                        </FloatingLabel>
+                                                    </Col>
+                                                </Row >
 
-            <Row className="g-2">
-                <Col md>
-                    <FloatingLabel controlId="floatingInputGrid" label="#TokensToBeDesitributed">
-                        <Form.Control onChange={handleInput} name="TokensToBeDesitributed" type="text" />
-                    </FloatingLabel>
-                </Col>
-            </Row >
+                                                <Row className="g-2">
+                                                    <Col md>
+                                                        <FloatingLabel controlId="floatingInputGrid" label="#TokensToBeDesitributed">
+                                                            <Form.Control onChange={handleInput} name="TokensToBeDesitributed" type="text" />
+                                                        </FloatingLabel>
+                                                    </Col>
+                                                </Row >
 
-            <br></br>
-            <Row style={{ paddingLeft: "10%" }}>
-            <Col style={{ justifyContent: "center", alignItems: "center" }}>
-            <Button variant="dark" onClick={() => { action1() }}> Create</Button>
-            </Col>
-            </Row>
-            </Container>
-                                         
+                                                <br></br>
+                                                <Row style={{ paddingLeft: "10%" }}>
+                                                    <Col style={{ justifyContent: "center", alignItems: "center" }}>
+                                                        <Button variant="dark" onClick={() => { action1() }}> Create</Button>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
 
-                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" onClick={() => {deployAuction()}}>Deploy Auction </LoadingButton>
+
+                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" onClick={() => { deployAuction() }}>Deploy Auction </LoadingButton>
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>

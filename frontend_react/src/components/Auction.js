@@ -36,7 +36,7 @@ import CappedAuctionWRedistribution from '../contracts_hardhat/artifacts/contrac
 import DutchAuction from '../contracts_hardhat/artifacts/contracts/DutchAuction.sol/DutchAuction.json';
 import TokenABI from '../contracts_hardhat/artifacts/contracts/Token.sol/Token.json';
 import { WalletSwitcher } from '../User';
-const MaestroAddress = "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70";
+const MaestroAddress = "0x4ED02B5dA043d8c9882f11B9784D67f2a7E9cC7C";
 const CappedFCFSAddress = "0x43f691a5D43Dd8edbDa222c6a0de967E52a23db2"
 
 const mkdStr = `# {Freelance Finder Version 2}
@@ -328,7 +328,7 @@ const Auction = () => {
                 auctionType == "CappedFCFS" ?
 
                     <div>
-                        <AuctionInfo projectId={projectId} auction={auction} />
+                        <AuctionInfo projectId={projectId} auction={auction} price={price} tokenDist={tokenDist} deposit={deposit} />
                         {price}
                     </div>
 

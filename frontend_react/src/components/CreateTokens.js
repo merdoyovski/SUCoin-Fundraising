@@ -32,33 +32,34 @@ const CreateTokens = () => {
     const [totalSupply, setTotalSupply] = useState();
 
     const [toastShow, setToastshow] = useState(false);
-	const [toastText, setToasttext] = useState();
-	const [toastHeader, setToastheader] = useState();
+    const [toastText, setToasttext] = useState();
+    const [toastHeader, setToastheader] = useState();
 
     const action1 = async () => {
-        try{
+        try {
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             const signer = await provider.getSigner();
 
             let TokenFactory = new ethers.ContractFactory(Token.abi, Token.bytecode, signer);
             setToastshow(true)
-		    setToastheader("Signing the Transaction")
-		    setToasttext("Please sign the transaction from your wallet.")            
+            setToastheader("Signing the Transaction")
+            setToasttext("Please sign the transaction from your wallet.")
             var tokenSC = await TokenFactory.deploy(tokenName, tokenSymbol, totalSupply, await signer.getAddress());
 
             setToastshow(false)
-			setToastshow(true)
-			setToastheader("Pending Transaction")
-			setToasttext("Waiting for transaction confirmation.")
+            setToastshow(true)
+            setToastheader("Pending Transaction")
+            setToasttext("Waiting for transaction confirmation.")
             await tokenSC.deployed();
             console.log("Your token deploye on address: %s", tokenSC.address);
+            alert(tokenSC.address)
             setToastshow(false);
-        }catch (error) {
-			setToastshow(true)
-			setToastheader("Catched an error")
-			setToasttext(error)
-			return false;
-		}
+        } catch (error) {
+            setToastshow(true)
+            setToastheader("Catched an error")
+            setToasttext(error)
+            return false;
+        }
     }
 
     const handleInput = e => {
@@ -68,7 +69,7 @@ const CreateTokens = () => {
         if (name === 'tokenName') setTokenName(value);
         if (name === 'tokenSymbol') setTokenSymbol(value);
         if (name === 'totalSupply') setTotalSupply(value);
-    
+
     };
 
     return (
