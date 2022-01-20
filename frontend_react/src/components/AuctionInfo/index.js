@@ -88,8 +88,8 @@ const AuctionInfo = ({ auction, projectId }) => {
       <Content>
         <Thumb style={{ alignItems: "center" }}
           image={
-            project.imageUrl == "" ? NoImage : project.imageUrl
-
+            //project.imageUrl == "" ? NoImage : project.imageUrl
+            NoImage
           }
           clickable={false}
           alt='movie-thumb'
@@ -105,7 +105,7 @@ const AuctionInfo = ({ auction, projectId }) => {
                 <Form>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Enter Project Name</Form.Label>
-                    <Form.Control name="name" onChange={handleInput} type="email" placeholder={project.projectName} />
+                    <Form.Control name="name" onChange={handleInput} type="email" placeholder={"eproject.projectNam"} />
                   </Form.Group>
                 </Form>
 
@@ -113,7 +113,7 @@ const AuctionInfo = ({ auction, projectId }) => {
                 <Form>
                   <Form.Group className="mb-3" controlId="floatingTextarea2">
                     <Form.Label>Enter Project Description</Form.Label>
-                    <Form.Control onChange={handleInput} type="email" placeholder={project.projectDescription}
+                    <Form.Control onChange={handleInput} type="email" placeholder={"project.projectDescription"}
                       name="description"
                       as="textarea"
                       placeholder="Enter Project Desription Here"
@@ -124,22 +124,22 @@ const AuctionInfo = ({ auction, projectId }) => {
                 <Form>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Enter Project Image URL</Form.Label>
-                    <Form.Control onChange={handleInput} name="imgUrl" type="email" placeholder={project.imageUrl} />
+                    <Form.Control onChange={handleInput} name="imgUrl" type="email" placeholder={"project.imageUrl"} />
                   </Form.Group>
                 </Form>
-                <Button variant="dark" onClick={() => submitChanges()}>Submit Changes</Button>
+
               </div>
               :
               <div>
                 <div>
-                  <h1>{project.projectName}</h1>
+                  <h1>{"project.projectName"}</h1>
                   <h3>About the Project</h3>
 
-                  <p>{project.projectDescription}</p>
+                  <p>{"project.projectDescription"}</p>
                 </div>
 
 
-                <Button variant="dark" onClick={() => getFile()}>Download PDF</Button>
+
 
                 <div className='rating-directors'>
                   <div className='rating-directors'>
@@ -153,19 +153,18 @@ const AuctionInfo = ({ auction, projectId }) => {
                   </div>
                 </div>
 
-                {isWhitelisted ?
+                {0 ?
                   <div >
                     <h3>    Vote </h3>
-                    <Button variant="success" onClick={() => approveProject()}>Approve</Button>
 
-                    <Button variant="danger" onClick={() => rejectProject()}>Reject</Button>
+
 
                   </div>
                   : <div></div>
                 }
                 <div style={{ padding: "60px 0px", marginLeft: "" }}>
-                  {status == "authority" ?
-                    <form onSubmit={addWhitelist}>
+                  {0 ?
+                    <form  >
                       <label>
                         Whitelist to Add:
                         <input type="text" name="name" />
@@ -174,9 +173,9 @@ const AuctionInfo = ({ auction, projectId }) => {
                     </form>
                     : <div></div>
                   }
-                  {isOwner ?
+                  {0 ?
                     <div >
-                      <Button variant="dark" onClick={() => showEdit()}>Edit Project</Button>
+
                     </div>
                     : <div></div>
                   }
