@@ -87,10 +87,10 @@ const TokenSwap = () => {
             setToastshow(false)
             setToastshow(true)
             setToastheader("Success")
-            setToasttext("Succesfuly bought %s SUCoin.", amount);
-
-            sleep(1000);
-            setToastshow(false);
+            setToasttext("Succesfuly bought %s SUCoin." + amount);
+            console.log("done", receipt)
+            //sleep(1000);
+            //setToastshow(false);
         } catch (error) {
 
             return false;
@@ -120,10 +120,10 @@ const TokenSwap = () => {
             setToastshow(false)
             setToastshow(true)
             setToastheader("Success")
-            setToasttext("Succesfuly swapped %s SUCoin to %s BiLira.", amount, amount);
+            setToasttext("Succesfuly swapped %s SUCoin to %s BiLira." + amount);
 
-            sleep(1000);
-            setToastshow(false);
+            //sleep(1000);
+            //setToastshow(false);
         } catch (error) {
             console.log(error)
 

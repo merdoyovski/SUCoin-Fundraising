@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone'
 import { useNavigate } from 'react-router-dom';
 import API from '../API';
@@ -8,7 +8,9 @@ import { jsPDF } from "jspdf";
 import MDEditor from "@uiw/react-md-editor";
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
+
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Col'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
@@ -39,7 +41,7 @@ const options = [
 const MaestroAddress = "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70";
 const CappedFCFSAddress = "0x43f691a5D43Dd8edbDa222c6a0de967E52a23db2"
 const Auctions = () => {
-    const [var1, setVar1] = useState();
+    const [auctions, setAuctions] = useState();
     const [var2, setVar2] = useState();
     const [var3, setVar3] = useState();
     const [var4, setVar4] = useState();
@@ -49,7 +51,7 @@ const Auctions = () => {
     const [toastText, setToasttext] = useState();
     const [toastHeader, setToastheader] = useState();
 
-    const action1 = async () => {
+    useEffect(async () => {
         try {
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             var Maestro = await new ethers.Contract(MaestroAddress, MaestroABI.abi, provider);
@@ -82,6 +84,7 @@ const Auctions = () => {
 
                 allAuctions.push({ "auctionAddress": aucAddress, "fileHash": fileHash, "auctionType": auctionType, "creator": creator, "tokenSymbol": tokenSymbol, tokenName: tokenName, status: status, tokenAddress: Project.token });
             }
+            setAuctions(allAuctions)
             console.log(allAuctions);
             /*var allTokenCreationEvents = await Maestro.filters.TokenCreation();
             console.log(allTokenCreationEvents);*/
@@ -92,16 +95,17 @@ const Auctions = () => {
             setToasttext(error)
             return false;
         }
-    }
+    }, [])
+
     const action2 = () => {
-        console.log(var2)
+        console.log(auctions)
     }
 
     const handleInput = e => {
         const name = e.currentTarget.name;
         const value = e.currentTarget.value;
 
-        if (name === 'var1') setVar1(value);
+        // if (name === 'var1') setVar1(value);
         if (name === 'var2') setVar2(value);
         if (name === 'var3') setVar3(value);
         if (name === 'var4') setVar4(value);
@@ -134,14 +138,40 @@ const Auctions = () => {
                     <br></br>
                     <Row style={{ paddingLeft: "10%" }}>
                         <Col style={{ justifyContent: "center", alignItems: "center" }}>
-                            <Button variant="dark" onClick={() => { action1() }}> Action 1</Button>
+                            <Button variant="dark" onClick={() => { action2() }}> Action 1</Button>
                         </Col>
                         <Col style={{ justifyContent: "center", alignItems: "center" }}>
                             <Button variant="dark" onClick={() => { action2() }}> Action 2</Button>
                         </Col>
                     </Row>
                 </Container>
+
+
+                <Container  >
+                    <Row>
+                        {
+
+                            auctions.map((project, index) => (
+                                <Col>
+                                    <Card style={{ width: '18rem' }}>
+
+                                        <Card.Body>
+                                            <Card.Title>Card Title</Card.Title>
+                                            <Card.Text>
+                                                Some quick example text to build on the card title and make up the bulk of
+                                                the card's content.
+                                            </Card.Text>
+                                            <Button variant="primary">Go somewhere</Button>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            ))
+
+                        }
+                    </Row>
+                </Container>
             </Wrapper >
+
 
         </>
     );
