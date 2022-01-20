@@ -88,9 +88,6 @@ const TokenSwap = () => {
             setToastshow(true)
             setToastheader("Success")
             setToasttext("Succesfuly bought %s SUCoin.", amount);
-
-            sleep(1000);
-            setToastshow(false);
         } catch (error) {
 
             return false;
@@ -115,15 +112,13 @@ const TokenSwap = () => {
             setToastheader("Pending Transaction")
             setToasttext("Waiting for transaction confirmation.")
 
-            let receipt = await sellTx.wait(1);
+            await sellTx.wait(1);
 
             setToastshow(false)
             setToastshow(true)
             setToastheader("Success")
-            setToasttext("Succesfuly swapped %s SUCoin to %s BiLira.", amount, amount);
+            setToasttext("Succesfuly swapped " +amount+" SUCoin to" +amount +"BiLira.");
 
-            sleep(1000);
-            setToastshow(false);
         } catch (error) {
             console.log(error)
 

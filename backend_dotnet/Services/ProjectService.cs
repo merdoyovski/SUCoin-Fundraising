@@ -40,6 +40,7 @@ namespace SU_COIN_BACK_END.Services {
         private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
         private string GetUsername() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         private string GetUserRole() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+        private string GetUserAddress() => (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Surname));
        
         public async Task<ServiceResponse<string>> AddProject(ProjectDTO project)
         {
@@ -62,6 +63,7 @@ namespace SU_COIN_BACK_END.Services {
                 new_project.Status ="Pending";
                 new_project.MarkDown = "";
                 new_project.Rating = 0;
+                new_project.ProposerAddress = GetUserAddress();
                 await _context.Projects.AddAsync(new_project);
                 await _context.SaveChangesAsync();
                 Project dbProject = await _context.Projects.FirstOrDefaultAsync(c => c.ProjectName == project.ProjectName);
