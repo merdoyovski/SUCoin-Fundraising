@@ -29,17 +29,43 @@ import abi from '../abi/project.json'
 import { ethers } from 'ethers';
 import ethersAbi from '../contracts_hardhat/artifacts/contracts/ProjectRegister.sol/ProjectRegister.json'
 
+import MaestroABI from '../contracts_hardhat/artifacts/contracts/Maestro.sol/Maestro.json';
+import CappedFCFS from '../contracts_hardhat/artifacts/contracts/CappedFCFSAuction.sol/CappedFCFSAuction.json';
+import CappedParcelLimitFCFS from '../contracts_hardhat/artifacts/contracts/CappedParcelLimitFCFSAuction.sol/CappedParcelLimitFCFSAuction.json';
+import CappedAuctionWRedistribution from '../contracts_hardhat/artifacts/contracts/CappedAuctionWRedistribution.sol/CappedAuctionWRedistribution.json';
+import DutchAuction from '../contracts_hardhat/artifacts/contracts/DutchAuction.sol/DutchAuction.json';
+import TokenABI from '../contracts_hardhat/artifacts/contracts/Token.sol/Token.json';
+
+
+const BiLiraAddress = "0xc8a80f82876C20903aa8eE1e55fa9782Aa9Ed3c3";
+
+const maestro = { address: "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70" }
+const SUCoin = { address: "0xa011037b3EF5EFd8e98D619e4E2fB8CB0a6acE9E" }
 
 const CreateAuction = () => {
     const [isLoading, setLoading] = useState(false)
     const [auctionTypes, setAuctiontypes] = useState([
         {
-            name: "Dutch",
-            description: "DUTCH MUTCH"
+            id: 0,
+            name: "Dutch Auction",
+            description: "this is DUTCH Auction"
         },
         {
-            name: "FCFS",
-            description: "First come first served"
+            id: 1,
+            name: "First Come First Served",
+            description: "This is First come first served"
+        }
+        ,
+        {
+            id: 2,
+            name: "Weighted",
+            description: "this Weighted"
+        }
+        ,
+        {
+            id: 3,
+            name: "Parcel Limit",
+            description: "this is Parcel Limit"
         }
     ]);
 
@@ -66,8 +92,31 @@ const CreateAuction = () => {
 
     };
 
-    const deployAuction = async () => {
+    const deployAuction = async (id) => {
 
+        const provider = await new ethers.providers.Web3Provider(window.ethereum);
+        const signer = await provider.getSigner();
+        /*
+                if (id == 0) {
+                    const DutchAuction = new ethers.getContractFactory(DutchAuction.abi, DutchAuction.bytecode, signer);
+                    let auction = await DutchAuction.deploy(10, 1, ProjectToken.address, 1000, SUCoin.address, 2, maestro.address, fileHash);
+                    await auction.deployed();
+                }
+                else if (id == 1) {
+                    const CappedFixedPriceAuction = new ethers.ContractFactory(CappedFCFSAuction.abi, CappedFCFSAuction.bytecode, signer);
+                    let auction = await CappedFixedPriceAuction.deploy(1, ProjectToken.address, SUCoin.address, 10000, maestro.address, fileHash);
+                    await auction.deployed();
+                }
+                else if (id == 2) {
+                    const CappedFixedPriceProportionalAuction = new ethers.ContractFactory(CappedAuctionWRedistribution.abi, CappedAuctionWRedistribution.bytecode, signer);
+                    let auction = await CappedFixedPriceProportionalAuction.deploy(1, ProjectToken.address, SUCoin.address, 10000, maestro.address, fileHash);
+                    await auction.deployed();
+                }
+                else if (id == 3) {
+                    const CappedParcelLimitFCFSAuction = new ethers.ContractFactory(CappedParcelLimitFCFSAuction.abi, CappedParcelLimitFCFSAuction.bytecode, signer);
+                    let auction = await CappedParcelLimitFCFSAuction.deploy(1, ProjectToken.address, SUCoin.address, 3000, 1000, maestro.address, fileHash);
+                    await auction.deployed();
+                }*/
     }
 
     return (
@@ -88,7 +137,7 @@ const CreateAuction = () => {
                                             {type.description}
 
 
-                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" func={deployAuction}> </LoadingButton>
+                                            <LoadingButton show={isLoading} text={"Submit to Chain"} variant="dark" onClick={(x) => console.log(x)}> </LoadingButton>
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>

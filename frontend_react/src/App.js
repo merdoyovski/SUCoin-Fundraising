@@ -9,6 +9,7 @@ import NotFound from './components/NotFound';
 import ProjectList from './components/ProjectList';
 import Apply from './components/Apply';
 import Auctions from './components/Auctions';
+import Auction from './components/Auction';
 import CreateTokens from './components/CreateTokens';
 import CreateAuction from './components/CreateAuction';
 import TokenSwap from './components/TokenSwap';
@@ -40,6 +41,7 @@ const App = () => {
           <Route path='/auctions' element={<Auctions />} />
           <Route path='/tokenSwap' element={<TokenSwap />} />
           <Route path='/projects/:projectId' element={<Project />} />
+          <Route path='/auction/:projectId' element={<Auction />} />
           <Route path='/*' element={<NotFound />} />
         </Routes>
         <GlobalStyle />

@@ -21,7 +21,7 @@ import Web3 from 'web3';
 import UserContext from '../User';
 import LoadingButton from './LoadingButton';
 import ToastBar from './Toast';
-
+import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie'
 import axios from "axios"
 import { ethers } from 'ethers';
@@ -40,6 +40,9 @@ const options = [
 
 const MaestroAddress = "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70";
 const CappedFCFSAddress = "0x43f691a5D43Dd8edbDa222c6a0de967E52a23db2"
+
+const IDs = []
+
 const Auctions = () => {
     const [auctions, setAuctions] = useState([
         {
@@ -72,6 +75,8 @@ const Auctions = () => {
     const [toastText, setToasttext] = useState();
     const [toastHeader, setToastheader] = useState();
     const [projects, setProjects] = useState();
+
+
 
     useEffect(async () => {
         try {
@@ -120,6 +125,7 @@ const Auctions = () => {
     }, [])
 
     useEffect(async () => {
+        const CryptoJS = require('crypto-js');
         try {
             const apiInstance = axios.create({
                 baseURL: "https://localhost:5001",
@@ -142,15 +148,35 @@ const Auctions = () => {
             console.log("ehee", result.data.data)
             setProjects(result.data.data)
 
+            let i = 0
+            auctions.forEach(auct => {
+
+                result.data.data.forEach(proj => {
+                    //console.log("XX", auct.fileHash, " VS ", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
+                    if (auct.fileHash == "0x" + CryptoJS.SHA256(proj.fileHex).toString()) {
+                        console.log("match", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
+                        console.log(proj.projectID)
+
+                        IDs.push(proj.projectID)
+                    }
+                    else {
+                        IDs.push(99999)
+                    }
+                    i++;
+                });
+            });
+
+
+
         } catch (error) {
             console.log(error)
         }
 
 
-    }, [])
+    }, [auctions])
 
     const action2 = () => {
-        console.log(auctions)
+        console.log("AYDISS", IDs)
     }
 
     const handleInput = e => {
@@ -203,21 +229,27 @@ const Auctions = () => {
                     <Row>
                         {
 
-                            auctions.map((project, index) => (
-                                <Col>
-                                    <Card style={{ width: '18rem' }}>
+                            auctions.map((project, index) => {
+                                var x = 0;
+                                return (
+                                    <Col>
+                                        <Card style={{ width: '18rem' }}>
 
-                                        <Card.Body>
-                                            <Card.Title>Card Title</Card.Title>
-                                            <Card.Text>
-                                                Some quick example text to build on the card title and make up the bulk of
-                                                the card's content.
-                                            </Card.Text>
-                                            <Button variant="primary">Go somewhere</Button>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))
+                                            <Card.Body>
+                                                <Card.Title>Card Title</Card.Title>
+                                                <Card.Text>
+                                                    Some quick example text to build on the card title and make up the bulk of
+                                                    the card's content.
+                                                </Card.Text>
+                                                <Link to={'/auctions/' + IDs[index]} >
+                                                    Auction Page
+                                                </Link >
+
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                )
+                            }
 
                         }
                     </Row>
