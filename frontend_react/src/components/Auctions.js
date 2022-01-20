@@ -80,6 +80,30 @@ const Auctions = () => {
 
     useEffect(async () => {
         try {
+            const CryptoJS = require('crypto-js');
+            const apiInstance = axios.create({
+                baseURL: "https://localhost:5001",
+            })
+            apiInstance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get('token')}`
+            let response2 = new Promise((resolve, reject) => {
+                apiInstance
+                    .get("/Project/Get")
+                    .then((res) => {
+                        console.log("response: ", res.data)
+                        resolve(res)
+                    })
+                    .catch((e) => {
+                        const err = "Unable to add the project"
+                        reject(err)
+
+                    })
+            })
+            let result = await response2
+            console.log("ehee", result.data.data)
+            setProjects(result.data.data)
+
+
+
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             var Maestro = await new ethers.Contract(MaestroAddress, MaestroABI.abi, provider);
 
@@ -109,10 +133,23 @@ const Auctions = () => {
                     status = "notStarted";
                 }
 
-                allAuctions.push({ "auctionAddress": aucAddress, "fileHash": fileHash, "auctionType": auctionType, "creator": creator, "tokenSymbol": tokenSymbol, tokenName: tokenName, status: status, tokenAddress: Project.token });
+                var id
+                result.data.data.forEach(proj => {
+                    //console.log("XX", auct.fileHash, " VS ", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
+                    if (fileHash == "0x" + CryptoJS.SHA256(proj.fileHex).toString()) {
+                        console.log("match", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
+                        console.log(proj.projectID)
+                        id = proj.projectID
+
+                    }
+                })
+
+                allAuctions.push({ "id": id, "auctionAddress": aucAddress, "fileHash": fileHash, "auctionType": auctionType, "creator": creator, "tokenSymbol": tokenSymbol, tokenName: tokenName, status: status, tokenAddress: Project.token });
             }
             setAuctions(allAuctions)
             console.log(allAuctions);
+
+
             /*var allTokenCreationEvents = await Maestro.filters.TokenCreation();
             console.log(allTokenCreationEvents);*/
 
@@ -123,58 +160,58 @@ const Auctions = () => {
             return false;
         }
     }, [])
-
-    useEffect(async () => {
-        const CryptoJS = require('crypto-js');
-        try {
-            const apiInstance = axios.create({
-                baseURL: "https://localhost:5001",
-            })
-            apiInstance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get('token')}`
-            let response2 = new Promise((resolve, reject) => {
-                apiInstance
-                    .get("/Project/Get")
-                    .then((res) => {
-                        console.log("response: ", res.data)
-                        resolve(res)
-                    })
-                    .catch((e) => {
-                        const err = "Unable to add the project"
-                        reject(err)
-
-                    })
-            })
-            let result = await response2
-            console.log("ehee", result.data.data)
-            setProjects(result.data.data)
-
-            let i = 0
-            auctions.forEach(auct => {
-
-                result.data.data.forEach(proj => {
-                    //console.log("XX", auct.fileHash, " VS ", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
-                    if (auct.fileHash == "0x" + CryptoJS.SHA256(proj.fileHex).toString()) {
-                        console.log("match", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
-                        console.log(proj.projectID)
-
-                        IDs.push(proj.projectID)
-                    }
-                    else {
-                        IDs.push(99999)
-                    }
-                    i++;
+    /*
+        useEffect(async () => {
+            const CryptoJS = require('crypto-js');
+            try {
+                const apiInstance = axios.create({
+                    baseURL: "https://localhost:5001",
+                })
+                apiInstance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get('token')}`
+                let response2 = new Promise((resolve, reject) => {
+                    apiInstance
+                        .get("/Project/Get")
+                        .then((res) => {
+                            console.log("response: ", res.data)
+                            resolve(res)
+                        })
+                        .catch((e) => {
+                            const err = "Unable to add the project"
+                            reject(err)
+    
+                        })
+                })
+                let result = await response2
+                console.log("ehee", result.data.data)
+                setProjects(result.data.data)
+    
+                let i = 0
+                auctions.forEach(auct => {
+    
+                    result.data.data.forEach(proj => {
+                        //console.log("XX", auct.fileHash, " VS ", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
+                        if (auct.fileHash == "0x" + CryptoJS.SHA256(proj.fileHex).toString()) {
+                            console.log("match", "0x" + CryptoJS.SHA256(proj.fileHex).toString())
+                            console.log(proj.projectID)
+    
+                            IDs.push(proj.projectID)
+                        }
+                        else {
+                            IDs.push(99999)
+                        }
+                        i++;
+                    });
                 });
-            });
-
-
-
-        } catch (error) {
-            console.log(error)
-        }
-
-
-    }, [auctions])
-
+    
+    
+    
+            } catch (error) {
+                console.log(error)
+            }
+    
+    
+        }, [auctions])
+    */
     const action2 = () => {
         console.log("AYDISS", IDs)
     }
@@ -229,27 +266,25 @@ const Auctions = () => {
                     <Row>
                         {
 
-                            auctions.map((project, index) => {
-                                var x = 0;
-                                return (
-                                    <Col>
-                                        <Card style={{ width: '18rem' }}>
+                            auctions.map((project, index) => (
+                                <Col>
+                                    <Card style={{ width: '18rem' }}>
 
-                                            <Card.Body>
-                                                <Card.Title>Card Title</Card.Title>
-                                                <Card.Text>
-                                                    Some quick example text to build on the card title and make up the bulk of
-                                                    the card's content.
-                                                </Card.Text>
-                                                <Link to={'/auctions/' + IDs[index]} >
-                                                    Auction Page
-                                                </Link >
+                                        <Card.Body>
+                                            <Card.Title>Card Title</Card.Title>
+                                            <Card.Text>
+                                                Some quick example text to build on the card title and make up the bulk of
+                                                the card's content.
+                                            </Card.Text>
+                                            <Link to={'/auction/' + project.id} >
+                                                Auction Page
+                                            </Link >
 
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-                                )
-                            }
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            )
 
                         }
                     </Row>
