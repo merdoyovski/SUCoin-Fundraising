@@ -37,7 +37,7 @@ const options = [
 ]
 
 const MaestroAddress = "0x589Fa7D96fE9305Bc95e866E1BCb28EeEE259A70";
-const CappedFCFSAddress= "0x43f691a5D43Dd8edbDa222c6a0de967E52a23db2"
+const CappedFCFSAddress = "0x43f691a5D43Dd8edbDa222c6a0de967E52a23db2"
 const Auctions = () => {
     const [var1, setVar1] = useState();
     const [var2, setVar2] = useState();
@@ -50,12 +50,12 @@ const Auctions = () => {
     const [toastHeader, setToastheader] = useState();
 
     const action1 = async () => {
-        try{
+        try {
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             var Maestro = await new ethers.Contract(MaestroAddress, MaestroABI.abi, provider);
-        
+
             var filter = await Maestro.filters.CreateAuctionEvent();
-              
+
             var allCreateAuctionEvents = await Maestro.queryFilter(filter);
             var allAuctions = [];
             for (let index = 0; index < allCreateAuctionEvents.length; index++) {
@@ -67,30 +67,30 @@ const Auctions = () => {
                 let tokenSC = await new ethers.Contract(Project.token, TokenABI.abi, provider);
                 let tokenSymbol = await tokenSC.symbol();
                 let tokenName = await tokenSC.name();
-                let auctionSc = await new ethers.Contract(aucAddress, (auctionType == 'CappedFCFS' ? CappedFCFS.abi : (auctionType == 'CappedAuctionWRedistribution' ? CappedAuctionWRedistribution.abi : (auctionType == "CappedParcelLimitFCFSAuction" ? CappedParcelLimitFCFS.abi : (auctionType == "DutchAuction" ? DutchAuction : DutchAuction)))) , provider);
-                let  isFinished = await auctionSc.isFinished();
+                let auctionSc = await new ethers.Contract(aucAddress, (auctionType == 'CappedFCFS' ? CappedFCFS.abi : (auctionType == 'CappedAuctionWRedistribution' ? CappedAuctionWRedistribution.abi : (auctionType == "CappedParcelLimitFCFSAuction" ? CappedParcelLimitFCFS.abi : (auctionType == "DutchAuction" ? DutchAuction : DutchAuction)))), provider);
+                let isFinished = await auctionSc.isFinished();
                 let isStarted = await auctionSc.isStarted();
                 var status;
-                if(isStarted && !isFinished){
+                if (isStarted && !isFinished) {
                     status = "Ongoing";
                 }
-                else if (isStarted && isFinished){
-                   status = "Finished";
-                }else if (!isStarted){
+                else if (isStarted && isFinished) {
+                    status = "Finished";
+                } else if (!isStarted) {
                     status = "notStarted";
                 }
-               
-               allAuctions.push({"auctionAddress": aucAddress, "fileHash": fileHash, "auctionType": auctionType, "creator": creator, "tokenSymbol": tokenSymbol, tokenName: tokenName, status: status, tokenAddress : Project.token}); 
+
+                allAuctions.push({ "auctionAddress": aucAddress, "fileHash": fileHash, "auctionType": auctionType, "creator": creator, "tokenSymbol": tokenSymbol, tokenName: tokenName, status: status, tokenAddress: Project.token });
             }
             console.log(allAuctions);
             /*var allTokenCreationEvents = await Maestro.filters.TokenCreation();
             console.log(allTokenCreationEvents);*/
 
-        }catch (error) {
-			setToastshow(true)
-			setToastheader("Catched an error")
-			setToasttext(error)
-			return false;
+        } catch (error) {
+            setToastshow(true)
+            setToastheader("Catched an error")
+            setToasttext(error)
+            return false;
         }
     }
     const action2 = () => {

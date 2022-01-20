@@ -44,6 +44,7 @@ const TokenSwap = () => {
     const [toastHeader, setToastheader] = useState();
 
     const swapTokens = async () => {
+        console.log(amount)
         if (tokens[0] == "BiLira") {
             action1()
         } else { action2() }
@@ -91,9 +92,7 @@ const TokenSwap = () => {
             sleep(1000);
             setToastshow(false);
         } catch (error) {
-            setToastshow(true)
-            setToastheader("Catched an error")
-            setToasttext(error)
+
             return false;
         }
     }
@@ -126,9 +125,8 @@ const TokenSwap = () => {
             sleep(1000);
             setToastshow(false);
         } catch (error) {
-            setToastshow(true)
-            setToastheader("Catched an error")
-            setToasttext(error)
+            console.log(error)
+
             return false;
         }
     }
@@ -143,7 +141,9 @@ const TokenSwap = () => {
         const value = e.currentTarget.value;
 
         if (name === 'amount') setAmount(value);
+        if (name === 'amount2') setAmount(value);
 
+        console.log("amm", amount)
     };
 
     return (
@@ -155,7 +155,7 @@ const TokenSwap = () => {
                     <Row className="g-2">
                         <Col md>
                             <FloatingLabel controlId="floatingInputGrid" label={tokens[0]}>
-                                <Form.Control onChange={handleInput} name="d" type="text" />
+                                <Form.Control onChange={handleInput} name="amount" type="text" value={amount} />
                             </FloatingLabel>
                         </Col>
                     </Row >
@@ -177,7 +177,7 @@ const TokenSwap = () => {
                     <Row className="g-2">
                         <Col md>
                             <FloatingLabel controlId="floatingInputGrid" label={tokens[1]}>
-                                <Form.Control onChange={handleInput} name="d" type="text" />
+                                <Form.Control onChange={handleInput} name="amount2" type="text" value={amount} />
                             </FloatingLabel>
                         </Col>
                     </Row >
