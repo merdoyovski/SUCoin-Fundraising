@@ -34,19 +34,24 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 const TokenSwap = () => {
+
+    const [tokens, setTokens] = useState(["SUCoin", "BiLira"])
     const [amount, setAmount] = useState();
-    const [var2, setVar2] = useState();
-    const [var3, setVar3] = useState();
-    const [var4, setVar4] = useState();
-    const [var5, setVar5] = useState();
+    const [asset, setAsset] = useState(tokens[0]);
 
     const [toastShow, setToastshow] = useState(false);
     const [toastText, setToasttext] = useState();
     const [toastHeader, setToastheader] = useState();
 
+    const swapTokens = async () => {
+        if (tokens[0] == "BiLira") {
+            action1()
+        } else { action2() }
+    }
 
     const action1 = async () => {
         try {
+
             const provider = await new ethers.providers.Web3Provider(window.ethereum);
             const signer = await provider.getSigner();
 
@@ -91,7 +96,6 @@ const TokenSwap = () => {
             setToasttext(error)
             return false;
         }
-
     }
 
     const action2 = async () => {
@@ -129,43 +133,61 @@ const TokenSwap = () => {
         }
     }
 
+    const changeAsset = async () => {
+        setTokens([tokens[1], tokens[0]])
+        //asset == "SUCoin" ? setAsset("BiLira") : setAsset("SUCoin");
+    }
+
     const handleInput = e => {
         const name = e.currentTarget.name;
         const value = e.currentTarget.value;
 
         if (name === 'amount') setAmount(value);
-        if (name === 'var2') setVar2(value);
+
     };
 
     return (
         <>
             <ToastBar toastText={toastText} toastHeader={toastHeader} toastShow={toastShow} setToastshow={setToastshow}></ToastBar>
             <Wrapper>
+
                 <Container  >
                     <Row className="g-2">
                         <Col md>
-                            <FloatingLabel controlId="floatingInputGrid" label="SUCOIN">
-                                <Form.Control onChange={handleInput} name="amount" type="text" />
+                            <FloatingLabel controlId="floatingInputGrid" label={tokens[0]}>
+                                <Form.Control onChange={handleInput} name="d" type="text" />
                             </FloatingLabel>
                         </Col>
                     </Row >
 
+                    <div style={{
+                        justifyContent: "center", alignItems: "center", marginBottom: "30px", marginTop: "30px", marginLeft: "70px"
+                    }}>
+                        < Button variant="dark" onClick={() => changeAsset()}>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z" />
+                            </svg>
+
+                        </Button>
+                    </div>
+
+
+
                     <Row className="g-2">
                         <Col md>
-                            <FloatingLabel controlId="floatingInputGrid" label="BiLira">
-                                <Form.Control onChange={handleInput} name="var2" type="text" />
+                            <FloatingLabel controlId="floatingInputGrid" label={tokens[1]}>
+                                <Form.Control onChange={handleInput} name="d" type="text" />
                             </FloatingLabel>
                         </Col>
                     </Row >
 
                     <br></br>
-                    <Row style={{ paddingLeft: "10%" }}>
-                        <Col style={{ justifyContent: "center", alignItems: "center" }}>
-                            <Button variant="dark" onClick={() => { action1() }}> Buy SUCoin</Button>
+                    <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                        <Col style={{ justifyContent: "center", alignItems: "center", width: "60%" }}>
+                            <Button style={{ justifyContent: "center", alignItems: "center", width: "100%" }} variant="dark" onClick={() => { swapTokens() }}> Swap</Button>
                         </Col>
-                        <Col style={{ justifyContent: "center", alignItems: "center" }}>
-                            <Button variant="dark" onClick={() => { action2() }}> Sell SUCoin</Button>
-                        </Col>
+
                     </Row>
                 </Container>
             </Wrapper >

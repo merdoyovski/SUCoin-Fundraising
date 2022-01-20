@@ -42,9 +42,15 @@ export const Text = styled.div`
   .rating-directors {
     display: flex;
     justify-content: flex-start;
+    padding-top:10px;
   }
 
   .score {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    margin-top: -5px;
+   
     display: flex;
     align-items: center;
     justify-content: center;
@@ -54,7 +60,7 @@ export const Text = styled.div`
     color: #000;
     font-weight: 800;
     border-radius: 50%;
-    margin: 0;
+ 
   }
 
   .director {

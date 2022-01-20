@@ -304,10 +304,10 @@ namespace SU_COIN_BACK_END.Services {
                     string status = "Pending";
                     for (int i = 0; i < resp.Data.Count; i++)
                     {   
-                        if(resp.Data[i].Log.Topics[1] == "0x"+ hash_Str && resp.Data[i].Event.isApproved){
+                        if((resp.Data[i].Log.Topics[1]).ToString() == ("0x"+ hash_Str).ToString() && resp.Data[i].Event.isApproved){
                             status = "Approved";
                             break;
-                        }else if(resp.Data[i].Log.Topics[1] == "0x"+ hash_Str && !resp.Data[i].Event.isApproved){
+                        }else if((resp.Data[i].Log.Topics[1]).ToString() == ("0x"+ hash_Str).ToString() && !resp.Data[i].Event.isApproved){
                             status = "Rejected";
                             break;
                         }
